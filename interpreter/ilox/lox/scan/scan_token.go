@@ -70,7 +70,7 @@ func (s *Scanner) scanToken() {
 		} else if isAlpha(c) {
 			s.identifier()
 		} else {
-			s.errRep.Error(s.source, s.current, fmt.Sprintf("Unexpected character %q.", c))
+			s.error(s.current, fmt.Sprintf("Unexpected character %q.", c))
 		}
 	}
 }

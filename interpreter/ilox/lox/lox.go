@@ -26,6 +26,7 @@ func (l *Lox) Run(args []string) {
 			log.Fatal(err)
 		}
 	} else {
+		l.errRep.UseStdout = true
 		if err := l.runPrompt(); err != nil {
 			log.Fatal(err)
 		}
@@ -49,6 +50,10 @@ func (l *Lox) runPrompt() error {
 	input := bufio.NewScanner(os.Stdin)
 	for input.Scan() {
 		line := input.Text()
+		if line == "exit" {
+			return nil
+		}
+
 		l.run(line)
 		l.errRep.Reset()
 		fmt.Printf("> ")
@@ -60,7 +65,6 @@ func (l *Lox) runPrompt() error {
 func (l *Lox) run(src string) {
 	scanner := scan.NewScanner(src, &l.errRep)
 	tokens := scanner.ScanTokens()
-
 	for _, token := range tokens {
 		fmt.Println(token)
 	}

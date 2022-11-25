@@ -4,5 +4,7 @@ Yali stands for "Yet another Lox implementation", referring to the Lox language 
 
 ## Changes to the Interpreter
 
+- REPL exits when input line is `exit`.
 - Supports UTF-8 source code.
 - Adds fancier error printing (like in the book).
+- Adds Newline token to partially preserve newlines for code formatter.

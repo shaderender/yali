@@ -6,7 +6,7 @@ import (
 	"strconv"
 )
 
-// Methods for adding tokens
+// Methods for adding tokens.
 
 func (s *Scanner) addToken(t token.TokenType) {
 	s.addTokenLiteral(t, nil)
@@ -26,7 +26,7 @@ func (s *Scanner) string() {
 	}
 
 	if s.isAtEnd() {
-		s.errRep.Error(s.source, s.current, "Unterminated string.")
+		s.error(s.start, "Unterminated string.")
 		return
 	}
 

@@ -9,7 +9,6 @@ type Token struct {
 	offset  int
 }
 
-// TODO: Do we really need New()? We'll have to see how it gets used.
 func New(t TokenType, lexeme string, literal any, offset int) Token {
 	return Token{
 		t:       t,
@@ -20,5 +19,5 @@ func New(t TokenType, lexeme string, literal any, offset int) Token {
 }
 
 func (t Token) String() string {
-	return fmt.Sprintf("%v %s", t.t, t.lexeme)
+	return fmt.Sprintf("%d | %v %s", t.offset, t.t, t.lexeme)
 }
