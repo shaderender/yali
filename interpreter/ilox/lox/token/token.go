@@ -19,5 +19,5 @@ func New(t TokenType, lexeme string, literal any, offset int) Token {
 }
 
 func (t Token) String() string {
-	return fmt.Sprintf("%d | %v %s", t.offset, t.t, t.lexeme)
+	return fmt.Sprintf("%d | %12s | %s", t.offset, t.t, t.lexeme)
 }

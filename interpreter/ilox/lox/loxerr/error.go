@@ -2,7 +2,6 @@ package loxerr
 
 import (
 	"fmt"
-	"os"
 )
 
 type LineError struct {
@@ -21,20 +20,6 @@ func (e LineError) String() string {
 	s += fmt.Sprintf("%s^-- Here", nSpaces(len(marker)+e.ColumnNumber-1))
 
 	return s
-}
-
-func (r *Reporter) Error(e LineError, message string) {
-	r.ErrorWhere(e, "", message)
-}
-
-func (r *Reporter) ErrorWhere(e LineError, where, message string) {
-	if r.UseStdout {
-		fmt.Println(e)
-	} else {
-		fmt.Fprintln(os.Stderr, e)
-	}
-
-	r.hasError = true
 }
 
 func nSpaces(n int) string {
