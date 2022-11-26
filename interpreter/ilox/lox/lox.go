@@ -6,7 +6,6 @@ import (
 	"ilox/lox/loxerr"
 	"ilox/lox/scan"
 	"ilox/lox/token"
-	"log"
 	"os"
 	"strings"
 )
@@ -19,47 +18,6 @@ func New() Lox {
 	return Lox{}
 }
 
-func (l *Lox) Run(args []string) {
-	unrecognized := func() {
-		fmt.Fprintf(os.Stderr, "Unrecognized arguments: %q\n", strings.Join(args, " "))
-		fmt.Fprintf(os.Stderr, usage())
-		os.Exit(64)
-	}
-
-	switch len(args) {
-	case 0:
-		// REPL
-		l.errRep.UseStdout = true
-		if err := l.runPrompt(); err != nil {
-			log.Fatal(err)
-		}
-	case 1:
-		// help or bad arg
-		if args[0] == "help" {
-			fmt.Println(usage())
-			os.Exit(0)
-		} else {
-			unrecognized()
-		}
-	case 2:
-		path := args[1]
-		switch args[0] {
-		case "run":
-			if err := l.runFile(path); err != nil {
-				log.Fatal(err)
-			}
-		case "format":
-			if err := l.runFormatter(path); err != nil {
-				log.Fatal(err)
-			}
-		default:
-			unrecognized()
-		}
-	default:
-		unrecognized()
-	}
-}
-
 func usage() string {
 	s := "Usage:\n"
 	s += "  ilox                        runs REPL\n"
@@ -69,52 +27,78 @@ func usage() string {
 	return s
 }
 
-func (l *Lox) runFile(path string) error {
-	bytes, err := os.ReadFile(path)
-	if err != nil {
-		return err
+func (l *Lox) Run(args []string) {
+	switch len(args) {
+	case 0:
+		l.runPrompt()
+		return
+	case 1:
+		switch args[0] {
+		case "help":
+			fmt.Println(usage())
+			return
+		}
+	case 2:
+		switch args[0] {
+		case "run":
+			l.runFile(args[1])
+			return
+		case "format":
+			l.runFormatter(args[1])
+			return
+		}
 	}
-	l.run(string(bytes))
-	if l.errRep.HasError() {
-		os.Exit(65) // TODO: Should we really exit from here?
-	}
-	return nil
+
+	fmt.Fprintf(os.Stderr, "Unrecognized arguments: %q\n", strings.Join(args, " "))
+	fmt.Fprintf(os.Stderr, usage())
+	os.Exit(64)
 }
 
-func (l *Lox) runFormatter(path string) error {
-	bytes, err := os.ReadFile(path)
-	if err != nil {
-		return err
-	}
-
-	scanner := scan.NewScanner(string(bytes), &l.errRep)
-	tokens := scanner.ScanTokens()
-
-	if l.errRep.HasError() {
-		os.Exit(65) // TODO: Should we use the same value as runFile?
-	}
-
-	src := token.Format(tokens)
-	fmt.Println(src)
-
-	return nil
-}
-
-func (l *Lox) runPrompt() error {
+func (l *Lox) runPrompt() {
+	l.errRep.UseStdout = true
 	fmt.Printf("> ")
+
 	input := bufio.NewScanner(os.Stdin)
 	for input.Scan() {
 		line := input.Text()
 		if line == "exit" {
-			return nil
+			return
 		}
 
 		l.run(line)
 		l.errRep.Reset()
 		fmt.Printf("> ")
 	}
+}
 
-	return nil
+func (l *Lox) runFile(path string) {
+	bytes, err := os.ReadFile(path)
+	if err != nil {
+		fmt.Fprintln(os.Stderr, err)
+		os.Exit(65)
+	}
+
+	l.run(string(bytes))
+	if l.errRep.HasError() {
+		os.Exit(65)
+	}
+}
+
+func (l *Lox) runFormatter(path string) {
+	bytes, err := os.ReadFile(path)
+	if err != nil {
+		fmt.Fprintln(os.Stderr, err)
+		os.Exit(65)
+	}
+
+	scanner := scan.NewScanner(string(bytes), &l.errRep)
+	tokens := scanner.ScanTokens()
+	if l.errRep.HasError() {
+		os.Exit(65)
+	}
+
+	src := token.Format(tokens)
+	fmt.Println(src)
 }
 
 func (l *Lox) run(src string) {
