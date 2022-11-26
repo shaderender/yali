@@ -101,7 +101,7 @@ fun outerFunction() {
 fun returnFunction() {
     var outside = "outside";
 
-    fun innerHeight() {
+    fun inner() {
         print outside;
     }
 
