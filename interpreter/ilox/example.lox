@@ -143,8 +143,8 @@ class Brunch < Breakfast {
 var benedict = Brunch("ham", "English muffin", "orange juice");
 benedict.serve("Noble Reader");
 
-clock(); @ // '@' will trip the "Unidentified character" error.
+clock(); //@ // '@' will trip the "Unidentified character" error.
 
 var 平和 = "平和 = peace" // 平和 is UTF-8
 
-"This isn't a full string
+//"This isn't a full string
