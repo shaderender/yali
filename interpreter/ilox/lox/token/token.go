@@ -3,21 +3,21 @@ package token
 import "fmt"
 
 type Token struct {
-	t       TokenType
-	lexeme  string
-	literal any
-	offset  int
+	Type    TokenType
+	Lexeme  string
+	Literal any
+	Offset  int
 }
 
 func New(t TokenType, lexeme string, literal any, offset int) Token {
 	return Token{
-		t:       t,
-		lexeme:  lexeme,
-		literal: literal,
-		offset:  offset,
+		Type:    t,
+		Lexeme:  lexeme,
+		Literal: literal,
+		Offset:  offset,
 	}
 }
 
 func (t Token) String() string {
-	return fmt.Sprintf("%d | %12s | %s", t.offset, t.t, t.lexeme)
+	return fmt.Sprintf("%d | %12s | %s", t.Offset, t.Type, t.Lexeme)
 }

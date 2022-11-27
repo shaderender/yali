@@ -11,9 +11,9 @@ func Format(tokens []Token) string {
 	prev := Newline
 	indent := 0
 	for _, token := range tokens {
-		switch token.t {
+		switch token.Type {
 		case LeftBrace:
-			line += " " + token.lexeme
+			line += " " + token.Lexeme
 			// TODO: Consolodate below
 			line = nTabs(indent) + strings.TrimSpace(line)
 			lines = append(lines, line)
@@ -28,9 +28,9 @@ func Format(tokens []Token) string {
 			indent--
 			fallthrough
 		default:
-			line += prefix(prev, token.t) + token.lexeme + suffix(prev, token.t)
+			line += prefix(prev, token.Type) + token.Lexeme + suffix(prev, token.Type)
 		}
-		prev = token.t
+		prev = token.Type
 	}
 
 	return strings.Join(lines, "\n")
