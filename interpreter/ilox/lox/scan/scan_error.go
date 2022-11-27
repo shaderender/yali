@@ -1,28 +1,17 @@
 package scan
 
 import (
-	"ilox/lox/loxerr"
+	"fmt"
+	"ilox/lox/util"
+	"os"
 )
 
-// From current offset
-func (s *Scanner) error(offset int, message string) {
-	if point, ok := s.newErrorLine(offset, message); ok {
-		s.errRep.Error(point, message)
-	}
-}
-
-func (s *Scanner) newErrorLine(offset int, message string) (loxerr.LineError, bool) {
-	lineOffset, ok := s.getLineOffset(offset)
-	if !ok {
-		return loxerr.LineError{}, false
+func (s *Scanner) reportError(offset int, message string) {
+	if offset < 0 || offset > len(s.source) {
+		fmt.Fprintf(os.Stderr, "Scanner error called with out-of-bounds offset")
+		return
 	}
 
-	line := loxerr.LineError{
-		Message:      message,
-		Line:         lineOffset.text,
-		LineNumber:   lineOffset.line,
-		ColumnNumber: lineOffset.column,
-	}
-
-	return line, true
+	point := util.GetLinePoint(s.source, offset)
+	s.err.Report(point, message)
 }

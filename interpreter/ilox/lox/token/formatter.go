@@ -15,13 +15,13 @@ func Format(tokens []Token) string {
 		case LeftBrace:
 			line += " " + token.lexeme
 			// TODO: Consolodate below
-			line = nSpaces(indent) + strings.TrimSpace(line)
+			line = nTabs(indent) + strings.TrimSpace(line)
 			lines = append(lines, line)
 			line = ""
 			// TODO: Consolodate above
 			indent++
 		case Newline:
-			line = nSpaces(indent) + strings.TrimSpace(line)
+			line = nTabs(indent) + strings.TrimSpace(line)
 			lines = append(lines, line)
 			line = ""
 		case RightBrace:
@@ -73,11 +73,10 @@ func suffix(prev, t TokenType) string {
 }
 
 // TODO: Find a more efficient method.
-func nSpaces(n int) string {
-	n *= 4
+func nTabs(n int) string {
 	s := ""
 	for i := 0; i < n; i++ {
-		s += " "
+		s += "\t"
 	}
 	return s
 }

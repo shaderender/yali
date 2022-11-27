@@ -11,7 +11,7 @@ import (
 )
 
 type Lox struct {
-	errRep loxerr.Reporter
+	err loxerr.Reporter
 }
 
 func New() Lox {
@@ -20,9 +20,9 @@ func New() Lox {
 
 func usage() string {
 	s := "Usage:\n"
-	s += "  ilox                        runs REPL\n"
-	s += "  ilox run [script]           runs the script\n"
-	s += "  ilox format [script]        formats the script\n"
+	s += "  ilox                    runs REPL\n"
+	s += "  ilox run [script]       runs the script\n"
+	s += "  ilox format [script]    formats the script\n"
 	s += "  ilox help\n"
 	return s
 }
@@ -55,7 +55,7 @@ func (l *Lox) Run(args []string) {
 }
 
 func (l *Lox) runPrompt() {
-	l.errRep.UseStdout = true
+	l.err.UseStdout = true
 	fmt.Printf("> ")
 
 	input := bufio.NewScanner(os.Stdin)
@@ -66,7 +66,7 @@ func (l *Lox) runPrompt() {
 		}
 
 		l.run(line)
-		l.errRep.Reset()
+		l.err.Reset()
 		fmt.Printf("> ")
 	}
 }
@@ -79,7 +79,7 @@ func (l *Lox) runFile(path string) {
 	}
 
 	l.run(string(bytes))
-	if l.errRep.HasError() {
+	if l.err.HasError() {
 		os.Exit(65)
 	}
 }
@@ -91,9 +91,9 @@ func (l *Lox) runFormatter(path string) {
 		os.Exit(65)
 	}
 
-	scanner := scan.NewScanner(string(bytes), &l.errRep)
+	scanner := scan.NewScanner(string(bytes), &l.err)
 	tokens := scanner.ScanTokens()
-	if l.errRep.HasError() {
+	if l.err.HasError() {
 		os.Exit(65)
 	}
 
@@ -102,7 +102,7 @@ func (l *Lox) runFormatter(path string) {
 }
 
 func (l *Lox) run(src string) {
-	scanner := scan.NewScanner(src, &l.errRep)
+	scanner := scan.NewScanner(src, &l.err)
 	tokens := scanner.ScanTokens()
 	for _, token := range tokens {
 		fmt.Println(token)
