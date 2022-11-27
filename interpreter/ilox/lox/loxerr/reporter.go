@@ -40,6 +40,7 @@ func errorToString(p util.LinePoint, where, message string) string {
 	s += fmt.Sprintf("%s%s\n", marker, p.Text)
 
 	s += fmt.Sprintf("%s^-- Here", nSpaces(len(marker)+p.Column-1))
+	s += "\n"
 
 	return s
 }

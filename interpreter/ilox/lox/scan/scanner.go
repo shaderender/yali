@@ -6,6 +6,7 @@ import (
 	"ilox/lox/token"
 	"log"
 	"strconv"
+	"unicode/utf8"
 )
 
 type Scanner struct {
@@ -38,6 +39,15 @@ func (s *Scanner) ScanTokens() []token.Token {
 	return s.tokens
 }
 
+func (s *Scanner) advance() (rune, bool) {
+	if s.isAtEnd() {
+		return 0, false
+	}
+	r, size := utf8.DecodeRuneInString(s.source[s.current:])
+	s.current += size
+	return r, true
+}
+
 func (s *Scanner) scanToken() {
 	c, ok := s.advance()
 	if !ok {
@@ -68,13 +78,33 @@ func (s *Scanner) scanToken() {
 		s.addToken(token.Star)
 	// Operators
 	case '!':
-		s.addToken(s.matchElse('=', token.BangEqual, token.Bang))
+		if s.match('=') {
+			s.addToken(token.BangEqual)
+			s.advance()
+		} else {
+			s.addToken(token.Bang)
+		}
 	case '=':
-		s.addToken(s.matchElse('=', token.EqualEqual, token.Equal))
+		if s.match('=') {
+			s.addToken(token.EqualEqual)
+			s.advance()
+		} else {
+			s.addToken(token.Equal)
+		}
 	case '<':
-		s.addToken(s.matchElse('=', token.LessEqual, token.Less))
+		if s.match('=') {
+			s.addToken(token.LessEqual)
+			s.advance()
+		} else {
+			s.addToken(token.Less)
+		}
 	case '>':
-		s.addToken(s.matchElse('=', token.GreaterEqual, token.Greater))
+		if s.match('=') {
+			s.addToken(token.GreaterEqual)
+			s.advance()
+		} else {
+			s.addToken(token.Greater)
+		}
 	// Division
 	case '/':
 		if s.match('/') {
@@ -103,7 +133,7 @@ func (s *Scanner) scanToken() {
 		} else if isAlpha(c) {
 			s.addIdentifierToken()
 		} else {
-			s.reportError(s.current, fmt.Sprintf("Unexpected character %q.", c))
+			s.reportError(s.start, fmt.Sprintf("Unexpected character %q.", c))
 		}
 	}
 }

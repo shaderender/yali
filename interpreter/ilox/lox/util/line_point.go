@@ -25,7 +25,7 @@ func GetLinePoint(s string, offset int) LinePoint {
 	line := LinePoint{
 		Text:   s[prevNewline+1 : nextNewline],
 		Line:   strings.Count(s[:prevNewline+1], "\n") + 1,
-		Column: offset - (prevNewline + 1),
+		Column: offset - prevNewline,
 	}
 
 	return line

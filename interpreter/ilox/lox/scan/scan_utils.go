@@ -1,7 +1,6 @@
 package scan
 
 import (
-	"ilox/lox/token"
 	"unicode"
 	"unicode/utf8"
 )
@@ -25,36 +24,19 @@ func (s *Scanner) isAtEnd() bool {
 	return s.current >= len(s.source)
 }
 
+// match deviates from the book in that here we do not
+// implicitly advance the scanner, to avoid surpises.
 func (s *Scanner) match(expected rune) bool {
 	if s.isAtEnd() {
 		return false
 	}
 
-	r, size := utf8.DecodeRuneInString(s.source[s.current:])
+	r, _ := utf8.DecodeRuneInString(s.source[s.current:])
 	if r != expected {
 		return false
 	}
 
-	s.current += size
 	return true
-}
-
-// If the next rune matches expected, return a, else return b.
-func (s *Scanner) matchElse(expected rune, a, b token.TokenType) token.TokenType {
-	if s.match(expected) {
-		return a
-	}
-	return b
-}
-
-func (s *Scanner) advance() (rune, bool) {
-	if s.isAtEnd() {
-		return 0, false
-	}
-	// Handles UTF-8.
-	r, size := utf8.DecodeRuneInString(s.source[s.current:])
-	s.current += size
-	return r, true
 }
 
 func (s *Scanner) peek() (rune, bool) {

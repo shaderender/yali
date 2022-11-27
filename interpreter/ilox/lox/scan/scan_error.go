@@ -7,7 +7,7 @@ import (
 )
 
 func (s *Scanner) reportError(offset int, message string) {
-	if offset < 0 || offset > len(s.source) {
+	if offset < 0 || offset >= len(s.source) {
 		fmt.Fprintf(os.Stderr, "Scanner error called with out-of-bounds offset")
 		return
 	}
