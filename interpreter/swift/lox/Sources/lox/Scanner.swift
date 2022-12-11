@@ -63,6 +63,7 @@ class Scanner {
         case " ", "\r", "\t":
             break // Ignore whitespace
         case "\n":
+            addToken(type: .newline)
             line += 1
         case "\"":
             string()

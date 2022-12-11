@@ -43,6 +43,9 @@ struct Lox {
         let printPrompt = { print("> ", terminator: "") }
         printPrompt()
         while let line = readLine() {
+            if line == "exit" {
+                return
+            }
             try run(source: line)
             hadError = false
             printPrompt()

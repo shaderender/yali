@@ -14,6 +14,7 @@ enum TokenType {
     // Keywords.
     case kAnd, kClass, kElse, kFalse, kFun, kFor, kIf, kNil, kOr, kPrint, kReturn, kSuper, kThis, kTrue, kVar, kWhile
     
+    case newline
     case eof
     
     static let keywords: [String:TokenType] = [
