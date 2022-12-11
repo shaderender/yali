@@ -1,2 +1,19 @@
 .DS_Store
-interpreter/ilox/ilox
+
+# Xcode
+.build/
+/Packages
+/*.xcodeproj
+xcuserdata/
+DerivedData/
+.swiftpm/config/registries.json
+.swiftpm/xcode/package.xcworkspace/contents.xcworkspacedata/
+.netrc
+
+# VS Code
+.vscode/
+
+# Binaries
+interpreter/go/ilox/ilox
+interpreter/swift/lox/lox
+
